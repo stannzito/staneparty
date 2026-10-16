@@ -1,0 +1,753 @@
+/* 
+ ==========================================
+ 1. VARIÁVEIS GLOBAIS (O QUE É O QUÊ)
+ ==========================================
+ Aqui ficam as cores e medidas. Se quiser mudar a paleta, 
+ é só alterar os hexadecimais (#...) aqui embaixo!
+*/
+:root {
+  /* Cores principais */
+  --navy: #e9b68c;         /* Cor do fundo do mar (Atrás de tudo) */
+  --navy-shadow: #351401;  /* Cor da sombra para dar profundidade */
+  --siena: #ad631e;        /* Laranja principal (títulos em destaque) */
+  --burnt: #460c04;        /* Marrom escuro (textos normais e fundo do botão) */
+  
+  /* Fundos transparentes (Glassmorphism) */
+  /* AUMENTEI A OPACIDADE AQUI DE 0.20 PARA 0.45! Se quiser mais forte, mude para 0.60, 0.80... */
+  --glass: rgba(253, 230, 208, 0.452); 
+  
+  /* ESSE É DO SEU HOVER! Intocável! */
+  --glass-navy: rgba(12, 12, 87, 0.884); 
+  
+  /* Estrutura */
+  --panel-width: min(88vw, 720px); /* Largura máxima da janela de convite */
+  --radius: 26px; /* O quão redondas são as pontas do container */
+}
+
+/* 
+ ==========================================
+ 2. IMPORTAÇÃO DE FONTES
+ ==========================================
+*/
+@font-face {
+  font-family: "Saintcarell";
+  src: url("./assets/fonts/SAINTCARELL.otf") format("opentype");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Delrose";
+  src: url("./assets/fonts/DELROSE%20REGULAR.ttf") format("truetype");
+  font-display: swap;
+}
+
+/* 
+ ==========================================
+ 3. RESET BÁSICO E CORPO DO SITE
+ ==========================================
+*/
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+body {
+  min-height: 100dvh;
+
+  color: var(--burnt);
+  background: var(--navy);
+
+  font-family: "Space Mono", monospace;
+  text-align: center;
+
+  overscroll-behavior: none;
+}
+
+
+/* Tira aquele quadrado azul feio quando clica em algo no celular */
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 
+ ==========================================
+ 4. O MAR DE FUNDO (ONDAS)
+ ==========================================
+*/
+.atmosphere {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0; /* Fica no fundo absoluto */
+  pointer-events: none; /* Não atrapalha o clique nos botões */
+}
+
+/* 
+ ==========================================
+ ondas de fundo
+ ==========================================
+*/
+.waves {
+  position: absolute;
+  /* Alarga um pouco para os lados (-10% a 110%) para a animação 
+     de vai-e-vem nunca mostrar o "fundo vazio" nas bordinhas */
+  left: -10%;
+  bottom: 0;
+  width: 120%;
+  height: 55vh; /* Ocupa até pouco mais da metade */
+  opacity: 0.50;
+}
+
+.wave {
+  fill: #143970;
+  transform-origin: 50% 100%;
+}
+
+.wave-a { 
+  animation: driftA 13s ease-in-out infinite alternate; 
+}
+
+.wave-b { 
+  animation: driftB 17s ease-in-out infinite alternate; 
+  opacity: 0.75; 
+}
+
+.wave {
+  fill: #143970;
+  transform-origin: 50% 100%;
+}
+
+/* Força a animação a acontecer e garante o movimento */
+.wave-a { 
+  animation: driftA 13s ease-in-out infinite alternate; 
+}
+
+.wave-b { 
+  animation: driftB 17s ease-in-out infinite alternate; 
+  opacity: 0.75; 
+}
+
+/* 
+ ==========================================
+ 5. ALINHAMENTO GERAL (O PALCO)
+ ==========================================
+*/
+.stage {
+  position: relative;
+  z-index: 1; /* Fica acima das ondas */
+  min-height: 100svh;
+  display: grid;
+  place-items: center; /* Centraliza tudo perfeitamente no meio da tela */
+  padding: 30px 18px;
+}
+
+.pages {
+  position: relative;
+  width: min(var(--panel-width), 100%);
+  max-width: 100%;
+  display: grid;
+  place-items: center;
+}
+
+/* 
+ ==========================================
+ 6. O CONTAINER PRINCIPAL (O CONVITE EM SI)
+ ==========================================
+*/
+.invite-card {
+  grid-area: 1 / 1;
+  width: 100%;
+  display: grid;
+  place-items: center;
+  padding: clamp(32px, 6vw, 66px) clamp(22px, 6vw, 58px);
+  
+  /* BORDAS REMOVIDAS COM SUCESSO! */
+  background: var(--glass);
+  
+  /* Tirei o "inset" que criava uma bordinha interna, agora é só a sombra pra fora! */
+  box-shadow: 0 28px 70px rgba(9, 20, 36, 0.78); 
+  
+  border-radius: var(--radius);
+  backdrop-filter: blur(12px); /* Efeito de vidro embaçado */
+  -webkit-backdrop-filter: blur(12px); /* Efeito de vidro para iPhones */
+  
+  /* Estados de animação para quando a página "nasce" na tela */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: scale(0.985) translateY(8px);
+  transition: opacity 360ms ease, transform 500ms cubic-bezier(.22,.7,.2,1), visibility 0s linear 500ms;
+}
+
+/* Classe adicionada via JavaScript quando a página deve aparecer */
+.invite-card.is-active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: scale(1) translateY(0);
+  transition: opacity 360ms ease, transform 500ms cubic-bezier(.22,.7,.2,1), visibility 0s linear 0s;
+}
+
+/* Alturas mínimas para os containers não ficarem achatados */
+.invite-card--splash { min-height: min(72vh, 610px); }
+.invite-card--main { min-height: min(72vh, 610px); }
+.page-content {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 20px; /* Distância entre os elementos lá dentro */
+}
+
+.invite-card--main .page-content {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* 
+ ==========================================
+ 7. TEXTOS E TIPOGRAFIA
+ ==========================================
+*/
+/* Fontes secundárias (Cormorant) */
+.eyebrow,
+.subtitle-version,
+.subtitle-data,
+.countdown-days,
+.footer-countdown {
+  font-family: "Cormorant Upright", serif;
+  line-height: 1.5;
+}
+
+/* O texto pequeno acima do título */
+.eyebrow { font-size: clamp(22px, 4vw, 30px); font-weight: 500; }
+
+/* texto-título "STANEPARTY" */
+.title-script {
+  margin: 0;
+  font-family: "Saintcarell", "Cormorant Upright", serif;
+  font-size: clamp(38px, 12vw, 58px);
+  line-height: 0.92;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+/* textos especiais legais fofos / literalmente so o epilogus kk */
+.lore {
+  font-family: "Delrose", "Cormorant Upright", serif;
+  line-height: 1.5;
+}
+
+.lore--hero {
+  font-size: clamp(48px, 9vw, 84px);
+  color: var(--siena);
+  text-shadow: 0 2px 18px rgba(71,14,6,0.24); /* sombrinha no texto laranja */
+}
+
+.lore--tagline {
+  max-width: 600px;
+  margin: 8px auto 0;
+  font-size: clamp(18px, 3vw, 24px);
+}
+
+/* Contagens regressivas */
+.countdown-days { font-size: clamp(22px, 4vw, 30px); }
+.footer-countdown {
+  margin-top: 24px;
+  font-size: 16px;
+  opacity: 0.82;
+}
+
+/* Mexe EXCLUSIVAMENTE no tamanho do "2.1" */
+.subtitle-version { 
+  margin-top: -14px; 
+  font-family: "Cormorant Upright", serif;
+  font-size: clamp(38px, 6.5vw, 60px); /* tem que ver se ta bom ou se quer mais */
+  font-weight: 600; 
+  display: inline-block; /* Mantém a animação intacta */
+}
+
+/* data, local e dresscode */
+.subtitle-data {
+  color: var(--burnt);
+  text-decoration: none;
+  font-size: clamp(18px, 3.3vw, 25px);
+  font-weight: 600;
+  line-height: 1.5;
+  display: block; /* sobre pular uma linha e ficar bonitinho */
+}
+
+.subtitle-data {
+  color: var(--burnt);
+  text-decoration: none; 
+  font-size: clamp(18px, 3.3vw, 25px);
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.details {
+  width: 100%;
+  min-width: 0;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+}
+
+.main-header {
+  width: 100%;
+  min-width: 0;
+}
+
+.details > .subtitle-data {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.subtitle-data:hover,
+.subtitle-data:focus-visible { opacity: 0.7; }
+
+/* 
+ ==========================================
+ 8. O BOTÃO (CTA - CALL TO ACTION)
+ ==========================================
+*/
+.cta {
+  border: 0;
+  border-radius: 999px;
+  padding: 13px 24px 12px;
+  color: var(--siena);
+  background: var(--burnt);
+  font: 700 clamp(14px, 2.5vw, 17px)/1.2 "Space Mono", monospace;
+  cursor: pointer;
+  transition: transform 240ms ease, background 500ms ease, box-shadow 500ms ease;
+  box-shadow: 0 10px 26px rgba(71,14,6,0.18);
+}
+.cta:disabled { cursor: wait; }
+.cta:active { transform: scale(0.985); } /* Clicadinha pra dentro */
+
+/* SEU HOVER INTOCADO AQUI EMBAIXO! 
+   O @media garante que o hover só funcione em mouse (PC), no celular ele só clica */
+@media (hover: hover) and (pointer: fine) {
+  .cta:hover,
+  .cta:focus-visible {
+    transform: scale(1.055);
+    background: var(--glass-navy);
+    box-shadow: 0 0 0 1px var(--siena), 0 0 26px rgba(240,163,91,0.14);
+    animation: breathing 5s ease-in-out infinite;
+    outline: none;
+  }
+}
+
+.transition-light {
+  position: fixed;
+  inset: -30%;
+  z-index: 99999;
+
+  pointer-events: none;
+
+  opacity: 0;
+  visibility: hidden;
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(199, 196, 193, 0.95) 0%,
+      rgba(236, 227, 219, 0.75) 28%,
+      rgba(233, 233, 233, 0.466) 55%,
+      transparent 75%
+    );
+
+  transform: rotate(-18deg) translate3d(-120%, 120%, 0);
+
+  filter: blur(18px);
+
+  will-change: transform, opacity;
+}
+
+.transition-light.is-active {
+  visibility: visible;
+  animation: light-sweep 2.4s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+
+@keyframes light-sweep {
+
+  0% {
+    opacity: 0;
+    transform: rotate(-18deg) translate3d(-120%, 120%, 0);
+  }
+
+  18% {
+    opacity: 1;
+  }
+
+  48% {
+    opacity: 1;
+    transform: rotate(-18deg) translate3d(0, 0, 0);
+  }
+
+  62% {
+    opacity: 1;
+    transform: rotate(-18deg) translate3d(15%, -15%, 0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: rotate(-18deg) translate3d(120%, -120%, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .cloud-curtain.is-active .cloud-mass-wrapper {
+    animation-duration: 1s;
+  }
+
+}
+
+/* =========================
+   ENTRADA / SAÍDA DE PÁGINAS
+   ========================= */
+
+.invite-card.is-active {
+  animation: card-enter 900ms cubic-bezier(.22, .7, .2, 1) both;
+}
+
+@keyframes card-enter {
+  0% {
+    opacity: 0;
+    filter: blur(16px);
+    transform: scale(0.985) translateY(8px);
+  }
+
+  100% {
+    opacity: 1;
+    filter: blur(0);
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* =========================
+   TEXTO — ENTRADA HIERÁRQUICA
+   ========================= */
+
+/* =========================
+   ESTADO INICIAL DOS TEXTOS
+   ========================= */
+
+#pageMain .lore--hero,
+#pageMain .subtitle-version,
+#pageMain .lore--tagline,
+#pageMain #eventDate,
+#pageMain #venueLink,
+#pageMain #dresscodeLink,
+#pageMain #rsvpButton,
+#pageMain #footerCountdown {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+/* =========================
+   ENTRADA DA SEGUNDA PÁGINA
+   ========================= */
+
+#pageMain.is-active .lore--hero {
+  animation: text-enter 700ms cubic-bezier(.22, .7, .2, 1) 100ms both;
+}
+
+#pageMain.is-active .subtitle-version {
+  animation: text-enter 700ms cubic-bezier(.22, .7, .2, 1) 220ms both;
+}
+
+#pageMain.is-active .lore--tagline {
+  animation: text-enter 700ms cubic-bezier(.22, .7, .2, 1) 340ms both;
+}
+
+#pageMain.is-active #eventDate {
+  animation: text-enter 700ms cubic-bezier(.22, .7, .2, 1) 460ms both;
+}
+
+#pageMain.is-active #venueLink {
+  animation: text-enter 700ms cubic-bezier(.22, .7, .2, 1) 570ms both;
+}
+
+#pageMain.is-active #dresscodeLink {
+  animation: text-enter 700ms cubic-bezier(.22, .7, .2, 1) 680ms both;
+}
+
+#pageMain.is-active #rsvpButton {
+  animation: button-enter 900ms cubic-bezier(.22, .7, .2, 1) 810ms both;
+}
+
+#pageMain.is-active #footerCountdown {
+  animation: text-enter 700ms cubic-bezier(.22, .7, .2, 1) 970ms both;
+}
+
+@keyframes text-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes button-enter {
+  0% {
+    opacity: 0;
+    filter: blur(18px);
+    transform: translateY(8px);
+  }
+
+  55% {
+    opacity: 1;
+    filter: blur(5px);
+    transform: translateY(2px);
+  }
+
+  100% {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
+
+/* =========================
+   PRIMEIRA PÁGINA
+   ========================= */
+
+#pageSplash .eyebrow {
+  --enter-delay: 120ms;
+}
+
+#pageSplash .title-script {
+  --enter-delay: 260ms;
+}
+
+#pageSplash .countdown-days {
+  --enter-delay: 400ms;
+}
+
+#pageSplash #enterButton {
+  --enter-delay: 560ms;
+}
+
+
+/* =========================
+   BOTÕES — BLUR FORTE
+   ========================= */
+
+#pageSplash #enterButton,
+#pageMain #rsvpButton {
+  opacity: 0;
+  filter: blur(18px);
+  transform: translateY(8px);
+}
+
+.invite-card.is-active #enterButton,
+.invite-card.is-active #rsvpButton {
+  animation: button-enter 900ms cubic-bezier(.22, .7, .2, 1) both;
+  animation-delay: var(--enter-delay, 0ms);
+}
+
+@keyframes button-enter {
+  0% {
+    opacity: 0;
+    filter: blur(18px);
+    transform: translateY(8px);
+  }
+
+  55% {
+    opacity: 1;
+    filter: blur(5px);
+    transform: translateY(2px);
+  }
+
+  100% {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
+
+/* =========================
+   SEGUNDA PÁGINA
+   ========================= */
+
+#pageMain .lore--hero {
+  --enter-delay: 100ms;
+}
+
+#pageMain .subtitle-version {
+  --enter-delay: 220ms;
+}
+
+#pageMain .lore--tagline {
+  --enter-delay: 340ms;
+}
+
+#pageMain #eventDate {
+  --enter-delay: 460ms;
+}
+
+#pageMain #venueLink {
+  --enter-delay: 570ms;
+}
+
+#pageMain #dresscodeLink {
+  --enter-delay: 680ms;
+}
+
+#pageMain #rsvpButton {
+  --enter-delay: 810ms;
+}
+
+#pageMain #footerCountdown {
+  --enter-delay: 970ms;
+}
+
+
+/* =========================
+   FOOTER
+   ========================= */
+
+#pageMain #footerCountdown {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.invite-card.is-active #footerCountdown {
+  animation: text-enter 700ms cubic-bezier(.22, .7, .2, 1) both;
+  animation-delay: 970ms;
+}
+
+
+/* =========================
+   ACESSIBILIDADE
+   ========================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .invite-card.is-active,
+  .invite-card.is-leaving,
+  .invite-card.is-active .page-content > *,
+  .invite-card.is-active #enterButton,
+  .invite-card.is-active #rsvpButton,
+  .invite-card.is-active #footerCountdown {
+    animation: none !important;
+    filter: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
+  .page-content > *,
+  .page-content .subtitle-data,
+  .page-content #eventDate,
+  .page-content #venueLink,
+  .page-content #dresscodeLink {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ACESSIBILIDADE */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .cloud-curtain.is-active .cloud-mass-wrapper {
+    animation-duration: 0.8s;
+  }
+
+}
+
+/* 
+ ==========================================
+ 10. EFEITOS EXTRAS E ACESSIBILIDADE
+ ==========================================
+*/
+
+/* O grão de filme por cima de TUDO */
+.grain {
+  position: fixed;
+  inset: -50%;
+  z-index: 10;
+  pointer-events: none;
+  opacity: 0.42; 
+  
+  /* Mantém o SVG embutido, mas diminui o tamanho do bloco para adensar os pontos */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.9'/%3E%3C/svg%3E");
+  background-size: 120px 120px; 
+}
+
+/* Esconde textos visuais mas deixa pro leitor de tela (pra quem é cego) ler */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Animação do hover do botão */
+@keyframes breathing {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.72; }
+}
+
+/* Animações das ondas */
+@keyframes driftA {
+  from { transform: translateX(-2%) scaleY(0.98); }
+  to { transform: translateX(2%) scaleY(1.02); }
+}
+
+@keyframes driftB {
+  from { transform: translateX(2%) scaleY(1.01); }
+  to { transform: translateX(-2%) scaleY(0.98); }
+}
+
+@media (max-width: 480px) {
+  .stage {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .invite-card {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .title-script {
+    max-width: 100%;
+    font-size: clamp(24px, 8.2vw, 38px);
+    white-space: nowrap;
+  }
+
+  .lore--hero {
+    max-width: 100%;
+    overflow-wrap: break-word;
+  }
+}

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#041E42" />
+  <title>stanevinteum</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Upright:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="./assets/staneparty.png">
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+<div class="atmosphere">
+  <!-- Adicionei preserveAspectRatio="none" para esticar perfeitamente de ponta a ponta -->
+  <svg class="waves" viewBox="0 0 1440 600" preserveAspectRatio="none">
+    <!-- Onda de Trás -->
+    <path class="wave wave-b" d="M0,160L48,176C96,192,192,224,288,213.3C384,203,480,149,576,138.7C672,128,768,160,864,186.7C960,213,1056,235,1152,213.3C1248,192,1344,128,1392,96L1440,64L1440,600L1392,600C1344,600,1248,600,1152,600C1056,600,960,600,864,600C768,600,672,600,576,600C480,600,384,600,288,600C192,600,96,600,48,600L0,600Z"></path>
+    
+    <!-- Onda da Frente -->
+    <path class="wave wave-a" d="M0,96L48,112C96,128,192,160,288,186.7C384,213,480,235,576,213.3C672,192,768,128,864,122.7C960,117,1056,171,1152,197.3C1248,224,1344,224,1392,224L1440,224L1440,600L1392,600C1344,600,1248,600,1152,600C1056,600,960,600,864,600C768,600,672,600,576,600C480,600,384,600,288,600C192,600,96,600,48,600L0,600Z"></path>
+  </svg>
+</div>
+
+  <main class="stage">
+    <div class="pages" id="pages" aria-live="polite">
+      <!-- PÁGINA 1: possui o seu próprio container. -->
+      <section class="invite-card invite-card--splash is-active" id="pageSplash" aria-hidden="false">
+        <div class="page-content">
+          <div class="eyebrow">Prazer em ver-te em mais um</div>
+          <div class="lore lore--hero">STANEPARTY !</div>
+          <div class="countdown-days">faltam <span id="splashDays">—</span> dias.</div>
+          <button class="cta" id="enterButton" type="button">conferir mais</button>
+        </div>
+      </section>
+
+      <!-- PÁGINA 2: container independente; ocupa exatamente a mesma posição visual. -->
+      <section class="invite-card invite-card--main" id="pageMain" aria-hidden="true" inert>
+        <div class="page-content">
+          <header class="main-header">
+            <h1 class="title-script">STANEPARTY</h1>
+            <div class="subtitle-version">2.1</div>
+            <p class="lore lore--tagline">onde os humanos dormem, os vampiros queimam os pulmões!</p>
+          </header>
+
+          <div class="details">
+            <div class="subtitle-data" id="eventDate"></div>
+            <a class="detail-link subtitle-data" id="venueLink" href="#" target="_blank" rel="noopener"></a>
+            <a class="detail-link subtitle-data" id="dresscodeLink" href="#" target="_blank" rel="noopener"></a>
+          </div>
+
+          <button class="cta" id="rsvpButton" type="button">estarei lá !</button>
+          <footer class="footer-countdown" id="footerCountdown">— dias e — horas restantes.</footer>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div class="grain" aria-hidden="true"></div>
+  <div class="sr-only" id="statusMessage" aria-live="polite"></div>
+
+  <div id="pages">
+
+  <section id="pageSplash">
+    ...
+  </section>
+
+  <section id="pageMain">
+    ...
+  </section>
+
+</div>
+
+<div
+  class="transition-light"
+  id="transitionLight"
+  aria-hidden="true">
+</div>
+
+<script src="script.js"></script>
+
+  <script src="./script.js"></script>
+
+<div class="transition-light" id="transitionLight" aria-hidden="true"></div>
+
+</div>
+
+</div>
+
+</body>
+</html>
