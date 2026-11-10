@@ -5,8 +5,8 @@ const CONFIG = {
   evento: {
     titulo: 'stanevinteum',
 
-    dataISO: '2026-12-09T20:00:00-04:00',
-    dataExibicao: '9 de dezembro · 20h00',
+    dataISO: '2026-12-12T20:00:00-04:00',
+    dataExibicao: '12 de dezembro · 20h00',
 
     local: 'R. Marrocos, 324, Flores',
     localUrl: 'https://maps.app.goo.gl/Hxved2VTaoYvZLmD6',
@@ -21,8 +21,8 @@ const CONFIG = {
 
     calendario: {
       nome: 'festa jadeística',
-      descricao: 'aniversário de jade (09/12)',
-      data: '9 de dezembro de 2026, 20h00 (horário de Manaus)',
+      descricao: 'aniversário de jade (12/12)',
+      data: '12 de dezembro de 2026, 20h00 (horário de Manaus)',
       local: 'R. Marrocos, 324 - Flores, Manaus - AM, 69028-080'
     }
   },
